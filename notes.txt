@@ -51,7 +51,50 @@ thats why it is light weight and simple
 
 422-unprocessable entity
 
-//git
+401-unauthorized
+
+//middle ware
+app.use(session({
+    secret:'randomsecurestring',
+    resave:false,
+    saveUninitialized:false
+}));
+
+this is apllication wide middle ware
+middle ware is a fn
+after each request/application, all will be go through  middleware
+this can be seen in cmd after each sessions run
+middleware works commonly and simplify the code 
+we can write the codes commonly eg: if user tries to deposit without login,message will appear "please login"
+but after the server starts, the details will be used
+
+when session is initialzed globally, we can use in every routers
+
+middle ware- apllication wide middle ware
+here, for any application, the log will be given in cmd
+next(); used in the middle ware is to route to the next router when the true condition not works
+
+in short: all APIs (application) will go through the middleware, after each application (app.post for deposit/login..etc)
+middleware will work
+
+adv of middleware: common things like conditions can be given here (eg:eg: if user tries to deposit without login,message will appear "please login")
+another eg: common login functionality
+
+app.use((req,res,next)=>{
+    console.log(req.body);
+    next();
+})
+
+//now the body of postman of each application all the request will be printed in the console (cmd)
+
+but if we use middleware we don't need to print the message 'please login' while doing registration,
+ie, we need this only in deposit, withdraw and transactions route.
+for that we use authMiddleware.
+now after registration ,without login if we perform any deposit, withdraw and transactions, message 'please login' will appear
+correct performance will be done only after the login
+
+
+
 
 
 

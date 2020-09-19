@@ -33,13 +33,13 @@ const register = (name, acno, pin, pwd) => {
 //reg is an object this can be given any name
 //this name is used to call in the index.js
 
-const login= (acno1, password)=> {
+const login= (req,acno1, password)=> {
     var acno = parseInt(acno1);
     var data = details;
     if (acno in data) {
         var pwd = data[acno].password
         if (pwd == password) {
-            currentUser = data[acno];
+            req.session.currentUser = data[acno];
             // this.saveDetails();
             return {
                 status: true,
@@ -60,7 +60,6 @@ const login= (acno1, password)=> {
 const deposit=(acno2, pin2, amt2)=> {
     var pin = parseInt(pin2)
     var amt = Number(amt2)
-
     var acno = acno2
     let data = details;
 
@@ -104,6 +103,7 @@ const deposit=(acno2, pin2, amt2)=> {
       if (data[acno].balance < amt) {
         return {
           status: false,
+          statusCode:422,
           message: 'insufficient balance',
           balance: data[acno].balance
         }
@@ -116,7 +116,7 @@ const deposit=(acno2, pin2, amt2)=> {
 
         data[acno].transactions.push({
           amount: amt,
-          type: 'Debited'
+          type: 'Debicted'
         })
 
         //this.saveDetails();
@@ -139,22 +139,9 @@ const deposit=(acno2, pin2, amt2)=> {
 
 
 
-  const getTransactions=()=> {
-    return details[currentUser.acno].transactions;
+  const getTransactions=(req)=> {
+    return details[req.session.currentUser.acno].transactions;
   }
-
-//  const getDetails=()=> {
-//     if (localStorage.getItem("details")) {
-//       details = JSON.parse(localStorage.getItem("details"));
-//     }
-
-//        if (localStorage.getItem("currentUser")) {
-//       currentUser = JSON.parse(localStorage.getItem("currentUser"));
-//     }
-//   }
-
-
-
 
 
 module.exports = {

@@ -4,11 +4,60 @@ const express= require('express');
 
 const dataService =require('./services/data.service');
 
+const session =require('express-session');
+//express session is installed (npm i express-session) and declared here
+//the session is like local storage in front end 
 
 const app =express();
 //created the application for express
 
+app.use(session({
+    secret:'randomsecurestring',
+    resave:false,
+    saveUninitialized:false
+}));
+//after installing and initializing session,we have to use this
+//multiple users can be handled after using the sessions, ie, multiple users can use the application
+//after each session/modifications the sessions will be forcefully saved
+//using resave (only for modifications , the sessions need to be saved, ie, we set is as false)
+//the one with Uninitialized will not be saved (saveUninitialized:false)
+//secret:'randomsecurestring'---id will be created (key will be used to sign) for the session,ie, secure string
+//now the sessions are enabled
+//session can store any data eg:currentUser (req.session.currentUser)
+
+
+
 app.use(express.json());
+
+const logMiddleware=(req,res,next)=>{
+    console.log(req.body);
+    next();
+}
+
+//order is important, after app.use(express.json()) this only 
+// const logMiddleware=(req,res,next)=>{
+//     console.log(req.body);
+//     next();
+// } is defined
+
+
+app.use(logMiddleware);
+
+const authMiddleware=(req,res,next)=>{
+    if(!req.session.currentUser){
+        return res.json({ 
+         status: false,
+         statusCode: 401,
+         message: "please login",
+        });  
+        //user should be allowed to deposit before login
+        //when the user tries to deposit without login, we get above 401 unauthorized error
+     }
+     else{
+         next();
+         //route to next router when the if condition is false (ie, if we have session currentUser)
+     }
+};
 
 //app.listen(3000);
 //listen(3000) is a port to run the application, we can give any port number
@@ -102,11 +151,13 @@ app.post('/register',(req,res)=>{
 // })
 
 app.post('/login',(req,res)=>{
-    const result=dataService.login(req.body.acno,req.body.password)
+    const result=dataService.login(req,req.body.acno,req.body.password)
     //res.json(result)
     res.status(result.statusCode).json(result);
     
 })
+
+//request is also passed in the login , to save details (like local storage)
 
 //now the response can be seen as json by using 'res.json(result)'
 // like return {
@@ -118,20 +169,24 @@ app.post('/login',(req,res)=>{
 // this will 'res.status(result.statusCode).json(result)'
 //show the status 422-unprocessable entity in the 'status' section of postman
 
-app.post('/deposit',(req,res)=>{
+app.post('/deposit',authMiddleware,(req,res)=>{
+    console.log(req.session.currentUser);
+    //the saved user session can be seen in cmd
     const result=dataService.deposit(req.body.acno,req.body.pin,req.body.amt)
     res.status(result.statusCode).json(result);
     
 })
 
-app.post('/withdraw',(req,res)=>{
+app.post('/withdraw',authMiddleware,(req,res)=>{
+    //console.log(req.session.currentUser);
     const result=dataService.withdraw(req.body.acno,req.body.pin,req.body.amt)
     res.status(result.statusCode).json(result);
     
 })
 
-app.get('/transactions',(req,res)=>{
-    const result=dataService.getTransactions();
+app.get('/transactions',authMiddleware,(req,res)=>{
+    //console.log(req.session.currentUser);
+    const result=dataService.getTransactions(req);
     res.status(200).json(result);
     
 })
