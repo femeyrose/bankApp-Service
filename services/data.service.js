@@ -70,8 +70,12 @@ const deposit=(acno2, pin2, amt2)=> {
         data[acno].balance += amt
         data[acno].transactions.push({
           amount: amt,
-          type: 'Credicted'
+          type: 'Credicted',
+          id: Math.floor(Math.random()*100000)
+          //to get the id (random value) for identifying each transactions
+          //math.floor to remove the decimal
         })
+
        
        // this.saveDetails();
 
@@ -116,7 +120,8 @@ const deposit=(acno2, pin2, amt2)=> {
 
         data[acno].transactions.push({
           amount: amt,
-          type: 'Debicted'
+          type: 'Debicted',
+          id: Math.floor(Math.random()*100000)
         })
 
         //this.saveDetails();
@@ -143,11 +148,35 @@ const deposit=(acno2, pin2, amt2)=> {
     return details[req.session.currentUser.acno].transactions;
   }
 
+  //session for a user should be done
+
+const deleteTransaction= (req,id)=> {
+  let transactions= details[req.session.currentUser.acno].transactions;
+  transactions=transactions.filter(t=>{
+ if (t.id==id){
+   return false;
+ }
+ // if id matches that transaction will be removed
+ return true;
+  })
+  details[req.session.currentUser.acno].transactions= transactions;
+//transactions are stored to the details after filtering
+
+  return {
+    status:true,
+    statusCode:200,
+    message:'Transactions deleted successfully'
+  }
+}
+//filter operator in an array
+//if t==id remove the session with that id eg:55001
+
 
 module.exports = {
     reg: register,
     login,
     deposit,
     withdraw,
-    getTransactions
+    getTransactions,
+    deleteTransaction
 }

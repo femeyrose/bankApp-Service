@@ -93,6 +93,28 @@ for that we use authMiddleware.
 now after registration ,without login if we perform any deposit, withdraw and transactions, message 'please login' will appear
 correct performance will be done only after the login
 
+browser will give unique number to browser after each session
+ie, while login a session starts and each user has unique session number
+so sessions uses unique id rather than a variable like amount/type
+seesion is for server and cookies for browser
+
+
+filter operator in an array
+var array=[1,2,3,4]
+array.filter(a=>a!=3)
+o/p = [1,2,4]
+
+Mongo Db
+================
+cross platform -windows,linux, mac
+sequel Db
+data stored in json format
+tools used: compass, community server
+compass is a tool in mongo db, it is used to see/query db
+ie, compass is a GUI in mongo db
+
+
+
 
 
 

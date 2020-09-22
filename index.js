@@ -42,14 +42,18 @@ const logMiddleware=(req,res,next)=>{
 
 
 app.use(logMiddleware);
+//here this is an application wide middle ware, it will affect full apllication
+//ie, it will also effect for all routers that we defined (register,login,deposit,withdraw,transactions etc)
+
 
 const authMiddleware=(req,res,next)=>{
     if(!req.session.currentUser){
-        return res.json({ 
+        return res.status(401).json({ 
          status: false,
          statusCode: 401,
          message: "please login",
         });  
+        //return res.status(401).json will provide the status code 401 in the status section of postman
         //user should be allowed to deposit before login
         //when the user tries to deposit without login, we get above 401 unauthorized error
      }
@@ -58,6 +62,10 @@ const authMiddleware=(req,res,next)=>{
          //route to next router when the if condition is false (ie, if we have session currentUser)
      }
 };
+//now the session is enabled
+//now after defining the session, with all requests we add sessions (req.session)
+//authmiddle ware is a router wide middle ware, for register and login routers
+//we don't need for other routers, so this is not a application wide middle ware
 
 //app.listen(3000);
 //listen(3000) is a port to run the application, we can give any port number
@@ -190,6 +198,23 @@ app.get('/transactions',authMiddleware,(req,res)=>{
     res.status(200).json(result);
     
 })
+
+app.delete('/transactions/:id',authMiddleware,(req,res)=>{
+    const result=dataService.deleteTransaction(req,req.params.id)
+    //console.log(req.query.id);
+    //passing as id
+
+    // console.log(req.query.randomId);
+    //passing as random id
+
+    // console.log(req.params.id);
+    // passing as url parameter
+
+    res.status(200).json(result);
+})
+//in delete fn also we need authMiddleware otherwise anyone can delete the transactions
+
+
 
 
 app.put('/',(req,res)=>{
