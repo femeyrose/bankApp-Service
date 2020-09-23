@@ -114,6 +114,12 @@ compass is a tool in mongo db, it is used to see/query db
 ie, compass is a GUI in mongo db
 
 
+MongoDb installation
+========================
+https://docs.mongodb.com/manual/administration/install-community/
+
+
+
 
 
 

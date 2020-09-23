@@ -149,8 +149,15 @@ app.get('/',(req,res)=>{
 //to see this in the postman  give, "http://localhost:3000/register"
 
 app.post('/register',(req,res)=>{
-    const result=dataService.reg(req.body.name,req.body.acno,req.body.pin,req.body.password)
-    res.send(result.message)
+    dataService.reg(req.body.name,req.body.acno,req.body.pin,req.body.password)
+.then (result=>{
+    //result will be in 'result'
+    res.status(result.statusCode).json(result);
+})
+//this after db linking
+
+    // const result=dataService.reg(req.body.name,req.body.acno,req.body.pin,req.body.password)
+    // res.send(result.message)
 })
 
 // app.post('/login',(req,res)=>{
@@ -159,10 +166,13 @@ app.post('/register',(req,res)=>{
 // })
 
 app.post('/login',(req,res)=>{
-    const result=dataService.login(req,req.body.acno,req.body.password)
+    dataService.login(req,req.body.acno,req.body.password)
+    //const result=dataService.login(req,req.body.acno,req.body.password)
     //res.json(result)
+    .then (result=>{
     res.status(result.statusCode).json(result);
     
+})
 })
 
 //request is also passed in the login , to save details (like local storage)
