@@ -17,7 +17,7 @@ const register = (name, acno, pin, password) => {
   return db.User.findOne({
     acno
   })
-  //findOne will find only one user, find will search all possible users
+    //findOne will find only one user, find will search all possible users
 
     .then(user => {//console.log(user);
       // result will be in this 'user'
@@ -43,19 +43,19 @@ const register = (name, acno, pin, password) => {
         status: true,
         statusCode: 200,
         message: "Account created successfully"
-//after creating the new account this will appear in the mongodb
+        //after creating the new account this will appear in the mongodb
       }
 
     })
-  }
-  //it search the data from the db, and fetch the user with that acno
-  //.then is a promise in js for having asynchronous operation in js
-  //eg: setTimeout(function(){alert("hi")},5000)
-  //alert hi will display after 5 secs this is an asyn job
-  //same thing can be done using promises using .then
+}
+//it search the data from the db, and fetch the user with that acno
+//.then is a promise in js for having asynchronous operation in js
+//eg: setTimeout(function(){alert("hi")},5000)
+//alert hi will display after 5 secs this is an asyn job
+//same thing can be done using promises using .then
 
-  //eg: var promise = new Promise((resolve,reject)=>
-  // {setTimeout{function(){resolve()},5000}})
+//eg: var promise = new Promise((resolve,reject)=>
+// {setTimeout{function(){resolve()},5000}})
 
 
 
@@ -86,28 +86,28 @@ const register = (name, acno, pin, password) => {
 const login = (req, acno1, password) => {
   var acno = parseInt(acno1);
   return db.User.findOne({
-    acno:acno,
+    acno: acno,
     password
     //we can also give simply acno as in register
   })
 
-  .then(user => {//console.log(user);
-    if (user) {
-      req.session.currentUser=user;
-      //for checking the currentUser session for the remaining part(deposit,withdraw,transactions)
-      return {
-        status:true,
-        statusCode: 200,
-        message: "Logged In"
+    .then(user => {//console.log(user);
+      if (user) {
+        req.session.currentUser = acno;
+        //for checking the currentUser session for the remaining part(deposit,withdraw,transactions)
+        return {
+          status: true,
+          statusCode: 200,
+          message: "Logged In"
+        }
+        //if we have user above msg will be printed
       }
-      //if we have user above msg will be printed
-    }
-    return {
-      status:false,
-      statusCode: 422,
-      message: "Invalid credentials"
-    }
-  })
+      return {
+        status: false,
+        statusCode: 422,
+        message: "Invalid credentials"
+      }
+    })
 }
 
 
@@ -133,116 +133,218 @@ const login = (req, acno1, password) => {
 // }
 
 
-const deposit = (acno2, pin2, amt2) => {
-  var pin = parseInt(pin2)
-  var amt = Number(amt2)
-  var acno = acno2
-  let data = details;
+const deposit = (acno, pin, amt) => {
+  return db.User.findOne({
+    acno: acno,
+    pin:pin,
+    
+  })
+    .then(user => {
+      if (!user) {
+        return {
+          status: false,
+          statusCode: 422,
+          message: "invalid account details"
+        }
+      }
 
-  if (acno in data) {
-    var pin1 = data[acno].pin
-
-    if (pin == pin1) {
-      data[acno].balance += amt
-      data[acno].transactions.push({
+      user.balance += parseInt(amt);
+      user.transactions.push({
         amount: amt,
-        type: 'Credicted',
+        typeOfTransaction: 'credit',
         id: Math.floor(Math.random() * 100000)
-        //to get the id (random value) for identifying each transactions
-        //math.floor to remove the decimal
-      })
-
-
-      // this.saveDetails();
-
+      });
+      user.save();
       return {
         status: true,
         statusCode: 200,
-        message: 'account has been credicted',
-        balance: data[acno].balance
+        message: "credicted",
+        balance: user.balance
       }
 
-    }
-    else {
-      return {
-        message: 'invalid account'
-      }
-    }
-  }
+    })
 }
 
-const withdraw = (acno2, pin2, amt2) => {
-  var pin = parseInt(pin2)
-  var amt = Number(amt2)
 
-  var acno = acno2
-  let data = details;
+//   var pin = parseInt(pin2)
+//   var amt = Number(amt2)
+//   var acno = acno2
+//   let data = details;
 
-  if (acno in data) {
-    var pin1 = data[acno].pin
-    if (data[acno].balance < amt) {
+//   if (acno in data) {
+//     var pin1 = data[acno].pin
+
+//     if (pin == pin1) {
+//       data[acno].balance += amt
+//       data[acno].transactions.push({
+//         amount: amt,
+//         type: 'Credicted',
+//         id: Math.floor(Math.random() * 100000)
+//         //to get the id (random value) for identifying each transactions
+//         //math.floor to remove the decimal
+//       })
+
+
+//       // this.saveDetails();
+
+//       return {
+//         status: true,
+//         statusCode: 200,
+//         message: 'account has been credicted',
+//         balance: data[acno].balance
+//       }
+
+//     }
+//     else {
+//       return {
+//         message: 'invalid account'
+//       }
+//     }
+//   }
+// }
+
+const withdraw = (acno, pin, amt) => {
+  return db.User.findOne({
+    acno: acno,
+    pin:pin,
+    
+  })
+  .then(user => {
+    if (!user) {
       return {
         status: false,
         statusCode: 422,
-        message: 'insufficient balance',
-        balance: data[acno].balance
+        message: "invalid account details"
       }
     }
-
-    else if (pin == pin1) {
-
-      data[acno].balance -= amt
-      this.currentUser = data[acno]
-
-      data[acno].transactions.push({
-        amount: amt,
-        type: 'Debicted',
-        id: Math.floor(Math.random() * 100000)
-      })
-
-      //this.saveDetails();
-      return {
-        status: true,
-        statusCode: 200,
-        message: 'account has been debicted',
-        balance: data[acno].balance
-      }
-
+  if (user.balance < (amt)) {
+    return {
+      status: false,
+      statusCode: 422,
+      message: "insufficient balance",
+      balance: user.balance
     }
-    else {
-      return {
-        message: 'invalid account'
-      }
-    }
-
   }
+  user.balance -= parseInt(amt);
+  user.transactions.push({
+    amount: amt,
+    typeOfTransaction: 'debit',
+    id: Math.floor(Math.random() * 100000)
+  });
+  user.save();
+  return {
+    status: true,
+    statusCode: 200,
+    message: "debicted",
+    balance: user.balance
+  }
+})
+
 }
+//   var pin = parseInt(pin2)
+//   var amt = Number(amt2)
+
+//   var acno = acno2
+//   let data = details;
+
+//   if (acno in data) {
+//     var pin1 = data[acno].pin
+//     if (data[acno].balance < amt) {
+//       return {
+//         status: false,
+//         statusCode: 422,
+//         message: 'insufficient balance',
+//         balance: data[acno].balance
+//       }
+//     }
+
+//     else if (pin == pin1) {
+
+//       data[acno].balance -= amt
+//       this.currentUser = data[acno]
+
+//       data[acno].transactions.push({
+//         amount: amt,
+//         type: 'Debicted',
+//         id: Math.floor(Math.random() * 100000)
+//       })
+
+//       //this.saveDetails();
+//       return {
+//         status: true,
+//         statusCode: 200,
+//         message: 'account has been debicted',
+//         balance: data[acno].balance
+//       }
+
+//     }
+//     else {
+//       return {
+//         message: 'invalid account'
+//       }
+//     }
+
+//   }
+// }
 
 
 
 const getTransactions = (req) => {
-  return details[req.session.currentUser.acno].transactions;
+  return db.User.findOne({
+    acno: req.session.currentUser
+     
+  })
+.then(user=>
+  {
+    return{
+      status:true,
+      statusCode:200,
+      transactions:user.transactions
+    }
+  })
+  //return details[req.session.currentUser.acno].transactions;
 }
+  
 
 //session for a user should be done
 
 const deleteTransaction = (req, id) => {
-  let transactions = details[req.session.currentUser.acno].transactions;
-  transactions = transactions.filter(t => {
-    if (t.id == id) {
-      return false;
-    }
-    // if id matches that transaction will be removed
-    return true;
+  return db.User.findOne({
+    acno: req.session.currentUser  
   })
-  details[req.session.currentUser.acno].transactions = transactions;
-  //transactions are stored to the details after filtering
 
-  return {
-    status: true,
-    statusCode: 200,
-    message: 'Transactions deleted successfully'
-  }
+  .then(user=>{
+    user.transactions=user.transactions.filter(t=>{
+      if(t._id==id){
+        return false
+      }
+      return true;
+    })
+    user.save();
+    return {
+      status:true,
+      statusCode:200,
+      message:'Transaction deleted successfully'
+    }
+  })
+
+
+  // let transactions = details[req.session.currentUser.acno].transactions;
+  // transactions = transactions.filter(t => {
+  //   if (t.id == id) {
+  //     return false;
+  //   }
+  //   // if id matches that transaction will be removed
+  //   return true;
+  // })
+  // details[req.session.currentUser.acno].transactions = transactions;
+  // //transactions are stored to the details after filtering
+
+  // return {
+  //   status: true,
+  //   statusCode: 200,
+  //   message: 'Transactions deleted successfully'
+  // }
 }
 //filter operator in an array
 //if t==id remove the session with that id eg:55001

@@ -151,7 +151,7 @@ app.get('/',(req,res)=>{
 app.post('/register',(req,res)=>{
     dataService.reg(req.body.name,req.body.acno,req.body.pin,req.body.password)
 .then (result=>{
-    //result will be in 'result'
+    //result will be in 'result',
     res.status(result.statusCode).json(result);
 })
 //this after db linking
@@ -188,29 +188,43 @@ app.post('/login',(req,res)=>{
 //show the status 422-unprocessable entity in the 'status' section of postman
 
 app.post('/deposit',authMiddleware,(req,res)=>{
-    console.log(req.session.currentUser);
+    //console.log(req.session.currentUser);
     //the saved user session can be seen in cmd
-    const result=dataService.deposit(req.body.acno,req.body.pin,req.body.amt)
-    res.status(result.statusCode).json(result);
+    dataService.deposit(req.body.acno,req.body.pin,req.body.amt)
+   
+    //const result=dataService.deposit(req.body.acno,req.body.pin,req.body.amt)
     
+    .then(result=>{
+        res.status(result.statusCode).json(result);
+    })   
 })
 
 app.post('/withdraw',authMiddleware,(req,res)=>{
     //console.log(req.session.currentUser);
-    const result=dataService.withdraw(req.body.acno,req.body.pin,req.body.amt)
-    res.status(result.statusCode).json(result);
+    dataService.withdraw(req.body.acno,req.body.pin,req.body.amt)
     
+    //const result=dataService.withdraw(req.body.acno,req.body.pin,req.body.amt)
+    
+    .then(result=>{
+        res.status(result.statusCode).json(result);
+    })
+      
 })
 
 app.get('/transactions',authMiddleware,(req,res)=>{
     //console.log(req.session.currentUser);
-    const result=dataService.getTransactions(req);
-    res.status(200).json(result);
-    
-})
+    dataService.getTransactions(req)
 
-app.delete('/transactions/:id',authMiddleware,(req,res)=>{
-    const result=dataService.deleteTransaction(req,req.params.id)
+    //const result=dataService.getTransactions(req);
+    //res.status(200).json(result);
+    .then(result=>{
+        res.status(result.statusCode).json(result);
+    });
+});
+
+app.delete('/transactions/:id',authMiddleware,(req,res)=>{ 
+    dataService.deleteTransaction(req,req.params.id)
+    //const result=dataService.deleteTransaction(req,req.params.id)
     //console.log(req.query.id);
     //passing as id
 
@@ -220,7 +234,10 @@ app.delete('/transactions/:id',authMiddleware,(req,res)=>{
     // console.log(req.params.id);
     // passing as url parameter
 
-    res.status(200).json(result);
+    //res.status(200).json(result);
+    .then(result=>{
+        res.status(200).json(result);
+    });
 })
 //in delete fn also we need authMiddleware otherwise anyone can delete the transactions
 

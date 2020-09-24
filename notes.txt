@@ -113,6 +113,13 @@ tools used: compass, community server
 compass is a tool in mongo db, it is used to see/query db
 ie, compass is a GUI in mongo db
 
+interview questions
+======================
+we are doing session wise authentication
+
+JWT token- is a length token, signed tokeninside this token the code is encoded
+
+
 
 MongoDb installation
 ========================
