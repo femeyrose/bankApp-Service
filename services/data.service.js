@@ -1,6 +1,6 @@
 const db = require("./db");
 //here we have imported the db
-//this comes as by deafult after creating db.js
+
 
 let details = {
   1001: { name: "user1", acno: 1001, pin: 1001, password: 1234, balance: 1000, transactions: [] },
@@ -98,7 +98,8 @@ const login = (req, acno1, password) => {
         return {
           status: true,
           statusCode: 200,
-          message: "Logged In"
+          message: "Logged In",
+          name:user.name
         }
         //if we have user above msg will be printed
       }

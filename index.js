@@ -1,25 +1,38 @@
 const express= require('express');
 //this is like import module in the front end (note: 'express' defined in the brackets is the module)
-//express server is created
+//express server is created (we have imported the 'express' module here)
 
 const dataService =require('./services/data.service');
 
 const session =require('express-session');
 //express session is installed (npm i express-session) and declared here
+//express-session is imported here
 //the session is like local storage in front end 
-
+const cors= require('cors');
 const app =express();
 //created the application for express
+
+app.use(cors ({
+    origin:'http://localhost:4200',
+    credential:true
+}))
+
+// cors is istalling to the server
+// we are allowing the cookies now
+//after this only the register page (in 4200 will redirect to the login page)
+
+
+
 
 app.use(session({
     secret:'randomsecurestring',
     resave:false,
     saveUninitialized:false
 }));
-//after installing and initializing session,we have to use this
+//after installing and initializing session,we have to use this (ie after npm i express-session and const session =require('express-session'))
 //multiple users can be handled after using the sessions, ie, multiple users can use the application
 //after each session/modifications the sessions will be forcefully saved
-//using resave (only for modifications , the sessions need to be saved, ie, we set is as false)
+//using resave (only for modifications, the sessions need to be saved, ie, we set is as false)
 //the one with Uninitialized will not be saved (saveUninitialized:false)
 //secret:'randomsecurestring'---id will be created (key will be used to sign) for the session,ie, secure string
 //now the sessions are enabled
@@ -28,6 +41,8 @@ app.use(session({
 
 
 app.use(express.json());
+// express.json() is a method inbuilt in express to recognize the incoming Request Object as a JSON Object. 
+// This method is called as a middleware in your application using the code: app.use(express.json());
 
 const logMiddleware=(req,res,next)=>{
     console.log(req.body);
@@ -54,7 +69,7 @@ const authMiddleware=(req,res,next)=>{
          message: "please login",
         });  
         //return res.status(401).json will provide the status code 401 in the status section of postman
-        //user should be allowed to deposit before login
+        //user should not be allowed to deposit before login
         //when the user tries to deposit without login, we get above 401 unauthorized error
      }
      else{
@@ -64,8 +79,8 @@ const authMiddleware=(req,res,next)=>{
 };
 //now the session is enabled
 //now after defining the session, with all requests we add sessions (req.session)
-//authmiddle ware is a router wide middle ware, for register and login routers
-//we don't need for other routers, so this is not a application wide middle ware
+//authmiddle ware is a router wide middle ware, 
+//for register and login routers,we don't need for other routers, so this is not an application wide middle ware
 
 //app.listen(3000);
 //listen(3000) is a port to run the application, we can give any port number

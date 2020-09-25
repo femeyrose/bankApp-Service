@@ -6,9 +6,6 @@ we can perform the terminal operations in the terminal of VS code
 
 
 
-
-
-
 http verbs/http methods
 
 //post - to create data (like user, transactions) we use post
@@ -18,11 +15,9 @@ http verbs/http methods
 //delete-to delete
 
 REST-representational state transfer (set of constrains/rules/ it is an architecture)
-REST APIs- get put post patch delete are the verbs in the restart
+REST APIs- get,put,post,patch,delete are the verbs in the restart
 these are the contraints in the REST
 if all the rules are obeyed by an API then it is said to be REST
-
-
 
 
 //these http verbs/http methods are used in the postman
@@ -40,6 +35,8 @@ if all the rules are obeyed by an API then it is said to be REST
 
 //3 ways our express server is created
 thats why it is light weight and simple
+which means the developer does not have to write them from scratch but uses ready-made templates and saves a great deal of time. 
+Express.js considerably assists in keeping the code clean and organized.
 
 
 //status codes in postman
@@ -77,7 +74,7 @@ next(); used in the middle ware is to route to the next router when the true con
 in short: all APIs (application) will go through the middleware, after each application (app.post for deposit/login..etc)
 middleware will work
 
-adv of middleware: common things like conditions can be given here (eg:eg: if user tries to deposit without login,message will appear "please login")
+adv of middleware: common things like conditions can be given here (eg: if user tries to deposit without login,message will appear "please login")
 another eg: common login functionality
 
 app.use((req,res,next)=>{
@@ -94,7 +91,7 @@ now after registration ,without login if we perform any deposit, withdraw and tr
 correct performance will be done only after the login
 
 browser will give unique number to browser after each session
-ie, while login a session starts and each user has unique session number
+ie, while login, a session starts and each user has unique session number
 so sessions uses unique id rather than a variable like amount/type
 seesion is for server and cookies for browser
 
@@ -117,13 +114,20 @@ interview questions
 ======================
 we are doing session wise authentication
 
-JWT token- is a length token, signed tokeninside this token the code is encoded
+JWT token- is a length token, signed token, inside this token the code is encoded
 
+edit,delete,listing and do in express, node
 
 
 MongoDb installation
 ========================
 https://docs.mongodb.com/manual/administration/install-community/
+
+
+doubts
+==========
+> work flow b/w index and data.service
+> index.js (eg:register) fn is called >data.service >findone user from db>return to index.js   ? after that is it execute to next line or .then of index.js> when .then of data.service works?
 
 
 
