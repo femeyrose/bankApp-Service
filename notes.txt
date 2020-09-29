@@ -126,7 +126,7 @@ https://docs.mongodb.com/manual/administration/install-community/
 
 doubts
 ==========
-> work flow b/w index and data.service
+> work flow b/w index, db and data.service
 > index.js (eg:register) fn is called >data.service >findone user from db>return to index.js   ? after that is it execute to next line or .then of index.js> when .then of data.service works?
 
 

@@ -14,14 +14,12 @@ const app =express();
 
 app.use(cors ({
     origin:'http://localhost:4200',
-    credential:true
+    credentials:true
 }))
 
 // cors is istalling to the server
 // we are allowing the cookies now
 //after this only the register page (in 4200 will redirect to the login page)
-
-
 
 
 app.use(session({

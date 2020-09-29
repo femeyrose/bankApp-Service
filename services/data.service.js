@@ -91,7 +91,8 @@ const login = (req, acno1, password) => {
     //we can also give simply acno as in register
   })
 
-    .then(user => {//console.log(user);
+    .then(user => {
+      //console.log(user);
       if (user) {
         req.session.currentUser = acno;
         //for checking the currentUser session for the remaining part(deposit,withdraw,transactions)
