@@ -135,9 +135,9 @@ const login = (req, acno1, password) => {
 // }
 
 
-const deposit = (acno, pin, amt) => {
+const deposit = (req,acno, pin, amt) => {
   return db.User.findOne({
-    acno: acno,
+    acno: acno, 
     pin:pin,
     
   })
@@ -147,6 +147,14 @@ const deposit = (acno, pin, amt) => {
           status: false,
           statusCode: 422,
           message: "invalid account details"
+        }
+      }
+
+      if(req.session.currentUser!=acno){
+        return {
+          status: false,
+          statusCode: 422,
+          message: "you are not allowed to make this transaction", 
         }
       }
 
@@ -205,7 +213,7 @@ const deposit = (acno, pin, amt) => {
 //   }
 // }
 
-const withdraw = (acno, pin, amt) => {
+const withdraw = (req,acno, pin, amt) => {
   return db.User.findOne({
     acno: acno,
     pin:pin,
@@ -217,6 +225,13 @@ const withdraw = (acno, pin, amt) => {
         status: false,
         statusCode: 422,
         message: "invalid account details"
+      }
+    }
+    if(req.session.currentUser!=acno){
+      return {
+        status: false,
+        statusCode: 422,
+        message: "you are not allowed to make this transaction", 
       }
     }
   if (user.balance < (amt)) {

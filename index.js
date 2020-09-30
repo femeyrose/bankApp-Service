@@ -203,7 +203,7 @@ app.post('/login',(req,res)=>{
 app.post('/deposit',authMiddleware,(req,res)=>{
     //console.log(req.session.currentUser);
     //the saved user session can be seen in cmd
-    dataService.deposit(req.body.acno,req.body.pin,req.body.amt)
+    dataService.deposit(req,req.body.acno,req.body.pin,req.body.amt)
    
     //const result=dataService.deposit(req.body.acno,req.body.pin,req.body.amt)
     
@@ -214,7 +214,8 @@ app.post('/deposit',authMiddleware,(req,res)=>{
 
 app.post('/withdraw',authMiddleware,(req,res)=>{
     //console.log(req.session.currentUser);
-    dataService.withdraw(req.body.acno,req.body.pin,req.body.amt)
+    dataService.withdraw(req,req.body.acno,req.body.pin,req.body.amt)
+    //request is passed since we made checking whether the session user is trying to deposit/withdraw in the data.service.ts
     
     //const result=dataService.withdraw(req.body.acno,req.body.pin,req.body.amt)
     
